@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
-#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
+#include "onnxruntime/core/session/onnxruntime_cxx_api.h"
 #include <numeric>
 #include <sys/stat.h>
 
@@ -45,6 +45,18 @@ inline bool isFileExists(const std::string &name) {
     return (stat(name.c_str(), &buffer) == 0);
 }
 
+#ifdef _WIN32
+#define my_strtol wcstol
+#define my_strrchr wcsrchr
+#define my_strcasecmp _wcsicmp
+#define my_strdup _strdup
+#else
+#define my_strtol strtol
+#define my_strrchr strrchr
+#define my_strcasecmp strcasecmp
+#define my_strdup strdup
+#endif
+
 std::wstring strToWstr(std::string str);
 
 ScaleParam getScaleParam(cv::Mat &src, const float scale);
@@ -79,9 +91,13 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
 
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 
-std::vector<Ort::AllocatedStringPtr> getInputNames(Ort::Session *session);
+std::vector<char *> getInputNames(Ort::Session *session);
 
-std::vector<Ort::AllocatedStringPtr> getOutputNames(Ort::Session *session);
+std::vector<char *> getOutputNames(Ort::Session *session);
+
+void getInputName(Ort::Session *session, char *&inputName);
+
+void getOutputName(Ort::Session *session, char *&outputName);
 
 void saveImg(cv::Mat &img, const char *imgPath);
 
@@ -91,6 +107,6 @@ std::string getResultTxtFilePath(const char *path, const char *imgName);
 
 std::string getResultImgFilePath(const char *path, const char *imgName);
 
-std::string getDebugImgFilePath(const char *path, const char *imgName, size_t i, const char *tag);
+std::string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag);
 
 #endif //__OCR_UTILS_H__

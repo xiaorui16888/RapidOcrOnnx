@@ -6,8 +6,6 @@
  * Released under the MIT license
  * https://github.com/takamin/win-c/blob/master/LICENSE
  */
-#ifndef  __CLIB__
-
 #include <stdio.h>
 #include <string.h>
 #include "getopt.h"
@@ -176,7 +174,9 @@ static int _getopt_(int argc, char *const argv[],
                                 "%s: option requires an argument -- %c\n",
                                 argv[0], c);
                     }
-                    if (optstring[0] == ':' || ((optstring[0] == '-' || optstring[0] == '+') && optstring[1] == ':')) {
+                    if (optstring[0] == ':' ||
+                        (optstring[0] == '-' || optstring[0] == '+') &&
+                        optstring[1] == ':') {
                         c = ':';
                     } else {
                         c = '?';
@@ -220,5 +220,3 @@ int getopt_long_only(int argc, char* const argv[],
     return -1;
 }
 ********************************************************/
-
-#endif //  __CLIB__
